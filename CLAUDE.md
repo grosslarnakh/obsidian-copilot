@@ -194,12 +194,12 @@ For detailed architecture diagrams and documentation, see [`MESSAGE_ARCHITECTURE
 
 ### CSS & Styling
 
-- **NEVER edit `styles.css` directly** - This is a generated file
+- **NEVER edit `dist/styles.css` directly** - This is a generated file
 - **Source file**: `src/styles/tailwind.css` - Edit this file for custom CSS
-- **Build process**: `npm run build:tailwind` compiles `src/styles/tailwind.css` → `styles.css`
+- **Build process**: `npm run build:tailwind` compiles `src/styles/tailwind.css` → `dist/styles.css`
 - **Tailwind classes**: Use Tailwind utility classes in components (see `tailwind.config.js` for available classes)
 - **Custom CSS**: Add custom styles to `src/styles/tailwind.css` after the `@import` statements
-- After editing CSS, always run `npm run build` to regenerate `styles.css`
+- After editing CSS, always run `npm run build` to regenerate `dist/styles.css`
 
 ## Testing Guidelines
 
