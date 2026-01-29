@@ -247,7 +247,7 @@ export function registerFileTreeTool(vault: Vault): void {
 - Use to browse the vault's file structure including paths of notes and folders
 - Always call this tool to explore the exact path of notes or folders when you are not given the exact path.
 - DO NOT use this tool to look up note contents or metadata - use localSearch or readNote instead.
-- No parameters needed
+- Optional parameter fullListing: set to true to include empty folders in the result; by default empty folders are omitted
 
 Example queries that should use getFileTree:
 - "Create a new note in the projects folder" → call getFileTree to get the exact folder path

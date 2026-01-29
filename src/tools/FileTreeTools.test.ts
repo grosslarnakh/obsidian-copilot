@@ -209,4 +209,38 @@ describe("FileTreeTools", () => {
 
     expect(tree).toEqual(expectedTree);
   });
+
+  it("should include empty folders when fullListing is true", async () => {
+    // Add an empty folder to the structure
+    const emptyDir = new MockTFolder("docs/empty", root.children[0] as MockTFolder);
+    (root.children[0] as MockTFolder).children = [
+      ...(root.children[0] as MockTFolder).children,
+      emptyDir,
+    ];
+
+    const treeWithoutEmpty = buildFileTree(root, true, false);
+    expect((treeWithoutEmpty.vault as any).subFolders.docs.subFolders.empty).toBeUndefined();
+
+    const treeWithEmpty = buildFileTree(root, true, true);
+    expect((treeWithEmpty.vault as any).subFolders.docs.subFolders.empty).toEqual({});
+  });
+
+  it("should pass fullListing to buildFileTree when calling the tool", async () => {
+    const emptyDir = new MockTFolder("docs/empty", root.children[0] as MockTFolder);
+    (root.children[0] as MockTFolder).children = [
+      ...(root.children[0] as MockTFolder).children,
+      emptyDir,
+    ];
+
+    const tool = createGetFileTreeTool(root);
+    const resultWithFullListing = await ToolManager.callTool(tool, { fullListing: true });
+    const jsonPart = resultWithFullListing.substring(resultWithFullListing.indexOf("{"));
+    const treeWithEmpty = JSON.parse(jsonPart);
+    expect(treeWithEmpty.vault.subFolders.docs.subFolders.empty).toEqual({});
+
+    const resultDefault = await ToolManager.callTool(tool, {});
+    const jsonPartDefault = resultDefault.substring(resultDefault.indexOf("{"));
+    const treeDefault = JSON.parse(jsonPartDefault);
+    expect(treeDefault.vault.subFolders.docs.subFolders.empty).toBeUndefined();
+  });
 });
