@@ -88,6 +88,17 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
     return null;
   }
 
+  // Check if any tool is selected (when autonomous agent is off)
+  const hasSelectedTools = !autonomousAgentToggle && (vaultToggle || webToggle || composerToggle);
+  
+  // Determine which icon to show
+  const getIcon = () => {
+    if (autonomousAgentToggle) {
+      return <Sparkles className="tw-size-4" />;
+    }
+    return <Wrench className="tw-size-4" />;
+  };
+
   return (
     <TooltipProvider delayDuration={0}>
       {/* Desktop view - show all icons when container is wide enough */}
@@ -178,8 +189,15 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
       <div className="tw-flex tw-items-center tw-gap-0.5 @[420px]/chat-input:tw-hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost2" size="fit" className="tw-text-muted hover:tw-text-accent">
-              <Wrench className="tw-size-4" />
+            <Button
+              variant="ghost2"
+              size="fit"
+              className={cn(
+                "tw-text-muted hover:tw-text-accent",
+                hasSelectedTools && "tw-bg-muted/20"
+              )}
+            >
+              {getIcon()}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="tw-w-56">

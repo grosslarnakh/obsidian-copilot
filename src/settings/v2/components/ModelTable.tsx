@@ -66,17 +66,17 @@ const CAPABILITY_ICONS: Record<
 > = {
   [ModelCapability.REASONING]: {
     icon: Lightbulb,
-    color: "tw-text-model-capabilities-blue",
+    color: "tw-text-muted",
     tooltip: MODEL_CAPABILITIES.reasoning,
   },
   [ModelCapability.VISION]: {
     icon: Eye,
-    color: "tw-text-model-capabilities-green",
+    color: "tw-text-muted",
     tooltip: MODEL_CAPABILITIES.vision,
   },
   [ModelCapability.WEB_SEARCH]: {
     icon: Globe,
-    color: "tw-text-model-capabilities-blue",
+    color: "tw-text-muted",
     tooltip: MODEL_CAPABILITIES.websearch,
   },
 } as const;

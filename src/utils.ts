@@ -1287,6 +1287,27 @@ export function isSourceModeOn(): boolean {
 }
 
 /**
+ * Check if the Obsidian status bar is currently visible/enabled.
+ * The status bar can be hidden by user settings or plugins.
+ * @returns true if status bar is visible, false otherwise
+ */
+export function isStatusBarVisible(): boolean {
+  // Status bar element has class .status-bar and is typically in .app-container
+  const statusBar = document.querySelector(".status-bar") as HTMLElement | null;
+  if (!statusBar) {
+    return false;
+  }
+
+  // Check if element is actually visible (not hidden by CSS)
+  const style = window.getComputedStyle(statusBar);
+  return (
+    style.display !== "none" &&
+    style.visibility !== "hidden" &&
+    statusBar.offsetParent !== null
+  );
+}
+
+/**
  * Calculate the UTF-8 byte length of a string.
  * This is important for filesystem operations where filename limits are in bytes, not characters.
  * @param str - The string to measure

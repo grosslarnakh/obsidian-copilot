@@ -65,7 +65,7 @@ export function ModelSelector({
           variant={variant}
           size={size}
           disabled={disabled}
-          className={cn("tw-min-w-0 tw-justify-start tw-text-muted", className)}
+          className={cn("tw-min-w-0 tw-justify-start tw-text-muted/30", className)}
         >
           <div className="tw-min-w-0 tw-flex-1 tw-truncate">
             {modelError ? (
@@ -76,7 +76,7 @@ export function ModelSelector({
               <span className="tw-truncate">Select Model</span>
             )}
           </div>
-          {!disabled && <ChevronDown className="tw-mt-0.5 tw-size-5 tw-shrink-0" />}
+          {!disabled && <ChevronDown className="tw-mt-0.5 tw-size-5 tw-shrink-0 tw-text-muted/30" />}
         </Button>
       </DropdownMenuTrigger>
 

@@ -49,11 +49,11 @@ function ContextSelection({
   if (isWebSelectedTextContext(selectedText)) {
     const domain = getDomainFromUrl(selectedText.url);
     return (
-      <Badge className="tw-items-center tw-py-0 tw-pl-2 tw-pr-0.5 tw-text-xs">
+      <Badge className="tw-items-center tw-py-0 tw-pl-2 tw-pr-0.5 tw-text-[10px]">
         <div className="tw-flex tw-items-center tw-gap-1">
           <FaviconOrGlobe faviconUrl={selectedText.faviconUrl} />
           <span className="tw-max-w-40 tw-truncate">{selectedText.title || domain}</span>
-          <span className="tw-text-xs tw-text-faint">Selection</span>
+          <span className="tw-text-[10px] tw-text-faint">Selection</span>
         </div>
         <Button
           variant="ghost2"
@@ -75,11 +75,11 @@ function ContextSelection({
       : `L${selectedText.startLine}-${selectedText.endLine}`;
 
   return (
-    <Badge className="tw-items-center tw-py-0 tw-pl-2 tw-pr-0.5 tw-text-xs">
+    <Badge className="tw-items-center tw-py-0 tw-pl-2 tw-pr-0.5 tw-text-[10px]">
       <div className="tw-flex tw-items-center tw-gap-1">
         <FileText className="tw-size-3" />
         <span className="tw-max-w-40 tw-truncate">{selectedText.noteTitle}</span>
-        <span className="tw-text-xs tw-text-faint">{lineRange}</span>
+        <span className="tw-text-[10px] tw-text-faint">{lineRange}</span>
       </div>
       <Button
         variant="ghost2"
@@ -184,30 +184,31 @@ export const ChatContextMenu: React.FC<ChatContextMenuProps> = ({
 
   return (
     <div className="tw-flex tw-w-full tw-items-start tw-gap-1">
-      <div className="tw-flex tw-h-full tw-items-start">
-        <Popover open={showTypeahead} onOpenChange={setShowTypeahead}>
-          <PopoverTrigger asChild>
-            <Button
-              ref={buttonRef}
-              variant="ghost2"
-              size="fit"
-              className="tw-ml-1 tw-rounded-sm tw-border tw-border-solid tw-border-border tw-text-muted"
-            >
-              <span className="tw-text-base tw-font-medium tw-leading-none">@</span>
-              {!hasContext && <span className="tw-pr-1 tw-text-sm tw-leading-4">Add context</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="tw-w-[400px] tw-p-0" align="start" side="top" sideOffset={4}>
-            <AtMentionTypeahead
-              isOpen={showTypeahead}
-              onClose={handleTypeaheadClose}
-              onSelect={handleTypeaheadSelect}
-              isCopilotPlus={isCopilotPlus}
-              currentActiveFile={currentActiveFile}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+      {hasContext && (
+        <div className="tw-flex tw-h-full tw-items-start">
+          <Popover open={showTypeahead} onOpenChange={setShowTypeahead}>
+            <PopoverTrigger asChild>
+              <Button
+                ref={buttonRef}
+                variant="ghost2"
+                size="fit"
+                className="tw-ml-1 tw-rounded-sm tw-border tw-border-solid tw-border-border tw-text-muted tw-text-[10px]"
+              >
+                <span className="tw-text-[10px] tw-font-medium tw-leading-none">@</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="tw-w-[400px] tw-p-0" align="start" side="top" sideOffset={4}>
+              <AtMentionTypeahead
+                isOpen={showTypeahead}
+                onClose={handleTypeaheadClose}
+                onSelect={handleTypeaheadSelect}
+                isCopilotPlus={isCopilotPlus}
+                currentActiveFile={currentActiveFile}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
       <div className="tw-flex tw-flex-1 tw-flex-wrap tw-gap-1">
         {activeNoteVisible && currentActiveFile && (
           <ContextActiveNoteBadge

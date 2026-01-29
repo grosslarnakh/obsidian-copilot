@@ -104,9 +104,9 @@ export function ContextActiveNoteBadge({
         <TruncatedText className="tw-max-w-40" tooltipContent={tooltipContent} alwaysShowTooltip>
           {currentActiveFile.basename}
         </TruncatedText>
-        <span className="tw-text-xs tw-text-faint">Current</span>
-        {isPdf && <span className="tw-text-xs tw-text-faint">pdf</span>}
-        {isCanvas && <span className="tw-text-xs tw-text-faint">canvas</span>}
+        <span className="tw-text-[10px] tw-text-faint">Current</span>
+        {isPdf && <span className="tw-text-[10px] tw-text-faint">pdf</span>}
+        {isCanvas && <span className="tw-text-[10px] tw-text-faint">canvas</span>}
       </div>
       {onRemove && (
         <Button
@@ -150,7 +150,7 @@ export function ContextActiveWebTabBadge({
         <TruncatedText className="tw-max-w-40" tooltipContent={tooltipContent} alwaysShowTooltip>
           {displayText}
         </TruncatedText>
-        <span className="tw-text-xs tw-text-faint">Current</span>
+        <span className="tw-text-[10px] tw-text-faint">Current</span>
       </div>
       {onRemove && (
         <Button
@@ -182,8 +182,8 @@ export function ContextNoteBadge({ note, onRemove, onClick }: ContextNoteBadgePr
         <TruncatedText className="tw-max-w-40" tooltipContent={tooltipContent} alwaysShowTooltip>
           {note.basename}
         </TruncatedText>
-        {isPdf && <span className="tw-text-xs tw-text-faint">pdf</span>}
-        {isCanvas && <span className="tw-text-xs tw-text-faint">canvas</span>}
+        {isPdf && <span className="tw-text-[10px] tw-text-faint">pdf</span>}
+        {isCanvas && <span className="tw-text-[10px] tw-text-faint">canvas</span>}
       </div>
       {onRemove && (
         <Button
@@ -253,7 +253,7 @@ export function ContextWebTabBadge({ webTab, onRemove, onClick }: ContextWebTabB
         >
           {displayText}
         </TruncatedText>
-        {!isLoaded && <span className="tw-text-xs tw-text-muted">(not loaded)</span>}
+        {!isLoaded && <span className="tw-text-[10px] tw-text-muted">(not loaded)</span>}
       </div>
       {onRemove && (
         <Button
@@ -344,7 +344,7 @@ export function ContextSelectedTextBadge({
           <TruncatedText className="tw-max-w-40" tooltipContent={tooltipContent} alwaysShowTooltip>
             {selectedText.title || domain}
           </TruncatedText>
-          <span className="tw-text-xs tw-text-faint">Selection</span>
+          <span className="tw-text-[10px] tw-text-faint">Selection</span>
         </div>
         {onRemove && (
           <Button
@@ -380,7 +380,7 @@ export function ContextSelectedTextBadge({
         <TruncatedText className="tw-max-w-40" tooltipContent={tooltipContent} alwaysShowTooltip>
           {selectedText.noteTitle}
         </TruncatedText>
-        <span className="tw-text-xs tw-text-faint">{lineRange}</span>
+        <span className="tw-text-[10px] tw-text-faint">{lineRange}</span>
       </div>
       {onRemove && (
         <Button

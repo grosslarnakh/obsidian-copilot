@@ -6,7 +6,7 @@ import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertTriangle, ArrowUpRight, RotateCcw, Settings } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { SettingSwitch } from "@/components/ui/setting-switch";
 import { ModelParametersEditor } from "@/components/ui/ModelParametersEditor";
 import { CustomModel, getModelKey } from "@/aiParams";
@@ -212,7 +212,7 @@ export function ChatSettingsPopover() {
         <TooltipTrigger asChild>
           <PopoverTrigger asChild>
             <Button variant="ghost2" size="icon">
-              <Settings className="tw-size-4" />
+              <SlidersHorizontal className="tw-size-4" />
             </Button>
           </PopoverTrigger>
         </TooltipTrigger>

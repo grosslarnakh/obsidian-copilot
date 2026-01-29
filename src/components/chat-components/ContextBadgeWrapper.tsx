@@ -20,7 +20,7 @@ export function ContextBadgeWrapper({
     <Badge
       variant="default"
       className={cn(
-        "tw-items-center tw-border tw-border-solid tw-border-border tw-py-0 tw-pl-2 tw-text-xs",
+        "tw-items-center tw-border tw-border-solid tw-border-border tw-py-0 tw-pl-2 tw-text-[10px]",
         hasRemoveButton ? "tw-pr-0.5" : "tw-pr-2",
         isClickable && "tw-cursor-pointer hover:tw-bg-interactive-hover",
         className

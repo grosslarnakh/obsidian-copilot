@@ -83,7 +83,7 @@ const ChatMessages = memo(
         <div
           ref={scrollContainerCallbackRef}
           data-testid="chat-messages"
-          className="tw-relative tw-flex tw-w-full tw-flex-1 tw-select-text tw-flex-col tw-items-start tw-justify-start tw-overflow-y-auto tw-scroll-smooth tw-break-words tw-text-[calc(var(--font-text-size)_-_2px)]"
+          className="tw-relative tw-flex tw-w-full tw-flex-1 tw-select-text tw-flex-col tw-items-start tw-justify-start tw-overflow-y-auto tw-scroll-smooth tw-break-words tw-text-[calc(var(--font-text-size)_-_4px)]"
         >
           {chatHistory.map((message, index) => {
             const visibleMessages = chatHistory.filter((m) => m.isVisible);

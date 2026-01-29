@@ -168,12 +168,12 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
           <PlainTextPlugin
             contentEditable={
               <ContentEditable
-                className="tw-max-h-40 tw-min-h-[60px] tw-w-full tw-resize-none tw-overflow-y-auto tw-rounded-md tw-border-none tw-bg-transparent tw-px-2 tw-text-sm tw-text-normal tw-outline-none focus-visible:tw-ring-0"
+                className="tw-max-h-40 tw-min-h-[60px] tw-w-full tw-resize-none tw-overflow-y-auto tw-rounded-md tw-border-none tw-bg-transparent tw-px-2 tw-text-xs tw-text-normal tw-outline-none focus-visible:tw-ring-0"
                 aria-label="Chat input"
               />
             }
             placeholder={
-              <div className="tw-pointer-events-none tw-absolute tw-left-2 tw-top-0 tw-select-none tw-text-sm tw-text-muted/60">
+              <div className="tw-pointer-events-none tw-absolute tw-left-2 tw-top-0 tw-select-none tw-text-xs tw-text-muted/30">
                 {placeholder}
               </div>
             }

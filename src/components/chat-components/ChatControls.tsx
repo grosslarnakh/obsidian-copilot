@@ -20,10 +20,10 @@ import {
   Download,
   FileText,
   History,
-  LibraryBig,
-  MessageCirclePlus,
   MoreHorizontal,
+  Plus,
   RefreshCw,
+  Sigma,
   Sparkles,
   SquareArrowOutUpRight,
 } from "lucide-react";
@@ -220,20 +220,39 @@ export function ChatControls({
 
   return (
     <div className="tw-flex tw-w-full tw-items-center tw-justify-between tw-p-1">
-      <div className="tw-flex-1">
+      <div className="tw-flex-1"></div>
+      <div className="tw-flex tw-items-center tw-gap-1">
+        <div className="tw-mr-2">
+          <TokenCounter tokenCount={latestTokenCount ?? null} />
+        </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost2" size="icon" title="New Chat" onClick={onNewChat}>
+              <Plus className="tw-size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>New Chat</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <ChatHistoryPopover
+            chatHistory={chatHistory}
+            onUpdateTitle={onUpdateChatTitle}
+            onDeleteChat={onDeleteChat}
+            onLoadChat={onLoadChat}
+            onOpenSourceFile={onOpenSourceFile}
+          >
+            <TooltipTrigger asChild>
+              <Button variant="ghost2" size="icon" title="Chat History" onClick={onLoadHistory}>
+                <History className="tw-size-4" />
+              </Button>
+            </TooltipTrigger>
+          </ChatHistoryPopover>
+          <TooltipContent>Chat History</TooltipContent>
+        </Tooltip>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost2" size="fit" className="tw-ml-1 tw-text-sm tw-text-muted">
-              {selectedChain === ChainType.LLM_CHAIN && "chat (free)"}
-              {selectedChain === ChainType.VAULT_QA_CHAIN && "vault QA (free)"}
-              {selectedChain === ChainType.COPILOT_PLUS_CHAIN && (
-                <div className="tw-flex tw-items-center tw-gap-1">
-                  <Sparkles className="tw-size-4" />
-                  copilot plus
-                </div>
-              )}
-              {selectedChain === ChainType.PROJECT_CHAIN && "projects (alpha)"}
-              <ChevronDown className="tw-mt-0.5 tw-size-5" />
+            <Button variant="ghost2" size="icon" className="tw-ml-1">
+              <Sigma className="tw-size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
@@ -257,10 +276,7 @@ export function ChatControls({
                   handleModeChange(ChainType.COPILOT_PLUS_CHAIN);
                 }}
               >
-                <div className="tw-flex tw-items-center tw-gap-1">
-                  <Sparkles className="tw-size-4" />
-                  copilot plus
-                </div>
+                plus
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
@@ -269,19 +285,17 @@ export function ChatControls({
                   onCloseProject?.();
                 }}
               >
-                copilot plus
+                plus
                 <SquareArrowOutUpRight className="tw-size-3" />
               </DropdownMenuItem>
             )}
 
             {isPlusUser ? (
               <DropdownMenuItem
-                className="tw-flex tw-items-center tw-gap-1"
                 onSelect={() => {
                   handleModeChange(ChainType.PROJECT_CHAIN);
                 }}
               >
-                <LibraryBig className="tw-size-4" />
                 projects (alpha)
               </DropdownMenuItem>
             ) : (
@@ -291,53 +305,13 @@ export function ChatControls({
                   onCloseProject?.();
                 }}
               >
-                copilot plus
+                plus
                 <SquareArrowOutUpRight className="tw-size-3" />
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-      <div className="tw-flex tw-items-center tw-gap-1">
-        <div className="tw-mr-2">
-          <TokenCounter tokenCount={latestTokenCount ?? null} />
-        </div>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost2" size="icon" title="New Chat" onClick={onNewChat}>
-              <MessageCirclePlus className="tw-size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
-        </Tooltip>
         {selectedChain !== ChainType.PROJECT_CHAIN && <ChatSettingsPopover />}
-        {!settings.autosaveChat && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost2" size="icon" title="Save Chat as Note" onClick={onSaveAsNote}>
-                <Download className="tw-size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Save Chat as Note</TooltipContent>
-          </Tooltip>
-        )}
-        <Tooltip>
-          <ChatHistoryPopover
-            chatHistory={chatHistory}
-            onUpdateTitle={onUpdateChatTitle}
-            onDeleteChat={onDeleteChat}
-            onLoadChat={onLoadChat}
-            onOpenSourceFile={onOpenSourceFile}
-          >
-            <TooltipTrigger asChild>
-              <Button variant="ghost2" size="icon" title="Chat History" onClick={onLoadHistory}>
-                <History className="tw-size-4" />
-              </Button>
-            </TooltipTrigger>
-          </ChatHistoryPopover>
-          <TooltipContent>Chat History</TooltipContent>
-        </Tooltip>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost2" size="icon" title="Advanced Settings">
@@ -429,6 +403,16 @@ export function ChatControls({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+        {!settings.autosaveChat && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost2" size="icon" title="Save Chat as Note" onClick={onSaveAsNote}>
+                <Download className="tw-size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Save Chat as Note</TooltipContent>
+          </Tooltip>
+        )}
       </div>
     </div>
   );

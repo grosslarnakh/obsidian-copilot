@@ -48,6 +48,32 @@ In the case of Copilot for Obsidian, you will need to:
 5. Install the recommended VS Code extensions (Prettier and ESLint).
 6. Ensure your editor respects the `.editorconfig` and Prettier settings.
 7. Run `npm run dev` in your repo to see the effect of your changes.
+
+### Building and Deploying
+
+To build the plugin and deploy it to your Obsidian vault:
+
+1. Create a file `.obsidian-plugin-path` in the project root with the path to your Obsidian plugin folder:
+   ```
+   /path/to/your/vault/.obsidian/plugins/copilot
+   ```
+
+2. Run the build and deploy command:
+   ```bash
+   npm run build:deploy
+   ```
+
+   This will:
+   - Build the plugin (`main.js` and `styles.css` will be created in `dist/` folder)
+   - Copy `main.js`, `styles.css`, and `manifest.json` to your Obsidian plugin folder
+   - Reload the plugin in Obsidian to see your changes
+
+Alternatively, you can build without deploying:
+```bash
+npm run build
+```
+
+The `.obsidian-plugin-path` file is ignored by git, so each developer can have their own path configured.
 8. Before committing, run `npm run format` to ensure all files are properly formatted.
 9. When you are ready to make a pull request, ensure to make your changes in **a branch on your fork**, and then submit a pull request to the **main repo**.
 
