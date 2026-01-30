@@ -30,7 +30,10 @@ import { AgentReasoningBlock } from "@/components/chat-components/AgentReasoning
 import { USER_SENDER } from "@/constants";
 import { cn } from "@/lib/utils";
 import { parseToolCallMarkers } from "@/LLMProviders/chainRunner/utils/toolCallParser";
-import { parseReasoningBlock } from "@/LLMProviders/chainRunner/utils/AgentReasoningState";
+import {
+  parseReasoningBlock,
+  ParsedReasoningStep,
+} from "@/LLMProviders/chainRunner/utils/AgentReasoningState";
 import { processInlineCitations } from "@/LLMProviders/chainRunner/utils/citationUtils";
 import { ChatMessage } from "@/types/message";
 import { cleanMessageForCopy, extractYoutubeVideoId, insertIntoEditor } from "@/utils";
@@ -195,7 +198,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
   const [reasoningData, setReasoningData] = useState<{
     status: "reasoning" | "collapsed" | "complete";
     elapsedSeconds: number;
-    steps: string[];
+    steps: ParsedReasoningStep[];
   } | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const componentRef = useRef<Component | null>(null);

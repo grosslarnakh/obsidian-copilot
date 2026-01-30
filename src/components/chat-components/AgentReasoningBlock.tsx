@@ -5,12 +5,61 @@ import { ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 /**
+ * Renders one reasoning step: summary always visible; optional detail in a nested collapsible
+ */
+function ReasoningStepItem({ step }: { step: ReasoningStepDisplay }) {
+  const hasDetail = step.detail != null && step.detail.trim() !== "";
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  if (!hasDetail) {
+    return (
+      <li className="agent-reasoning-step">
+        {step.summary}
+      </li>
+    );
+  }
+
+  return (
+    <li className="agent-reasoning-step">
+      <Collapsible open={detailOpen} onOpenChange={setDetailOpen}>
+        <CollapsibleTrigger asChild>
+          <span
+            className={cn(
+              "tw-inline-flex tw-items-center tw-gap-1 tw-cursor-pointer hover:tw-text-muted",
+              detailOpen && "tw-text-muted"
+            )}
+          >
+            <ChevronRight
+              className={cn("tw-size-3 tw-shrink-0 tw-transition-transform", detailOpen && "tw-rotate-90")}
+            />
+            {step.summary}
+          </span>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="tw-mt-1 tw-pl-4 tw-pr-2 tw-py-1 tw-text-[11px] tw-leading-relaxed tw-text-muted tw-whitespace-pre-wrap tw-border-l-2 tw-border-border">
+            {step.detail}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </li>
+  );
+}
+
+/**
+ * One step: summary (short label) and optional detail (model's reasoning text)
+ */
+export interface ReasoningStepDisplay {
+  summary: string;
+  detail?: string;
+}
+
+/**
  * Props for the AgentReasoningBlock component
  */
 interface AgentReasoningBlockProps {
   status: ReasoningStatus;
   elapsedSeconds: number;
-  steps: string[];
+  steps: ReasoningStepDisplay[];
   isStreaming: boolean;
 }
 
@@ -104,14 +153,15 @@ export const AgentReasoningBlock: React.FC<AgentReasoningBlockProps> = ({
   steps,
   isStreaming,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(status === "reasoning");
+  // Default expanded when there are steps so content is visible; user can collapse via header
+  const [isExpanded, setIsExpanded] = useState(
+    status === "reasoning" || (status !== "idle" && steps.length > 0)
+  );
 
-  // Auto-expand when reasoning, auto-collapse when done
+  // Auto-expand only when entering active reasoning; do not auto-collapse when done
   useEffect(() => {
     if (status === "reasoning") {
       setIsExpanded(true);
-    } else if (status === "collapsed" || status === "complete") {
-      setIsExpanded(false);
     }
   }, [status]);
 
@@ -137,6 +187,8 @@ export const AgentReasoningBlock: React.FC<AgentReasoningBlockProps> = ({
             canExpand && "tw-cursor-pointer",
             !canExpand && "tw-cursor-default"
           )}
+          title={canExpand ? (isExpanded ? "Click to collapse" : "Click to expand") : undefined}
+          aria-expanded={canExpand ? isExpanded : undefined}
         >
           {/* Spinner or expand chevron */}
           <span className="agent-reasoning-icon">
@@ -158,14 +210,12 @@ export const AgentReasoningBlock: React.FC<AgentReasoningBlockProps> = ({
         </div>
       </CollapsibleTrigger>
 
-      {/* Steps - visible when expanded or actively reasoning */}
+      {/* Steps - visible when expanded or actively reasoning; steps with detail get expandable content */}
       <CollapsibleContent>
         {steps.length > 0 && (
           <ul className="agent-reasoning-steps">
             {steps.map((step, i) => (
-              <li key={i} className="agent-reasoning-step">
-                {step}
-              </li>
+              <ReasoningStepItem key={i} step={step} />
             ))}
           </ul>
         )}

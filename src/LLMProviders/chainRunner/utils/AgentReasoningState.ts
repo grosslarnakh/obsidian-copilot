@@ -6,12 +6,15 @@
  */
 
 /**
- * Represents a single reasoning step in the agent loop
+ * Represents a single reasoning step in the agent loop.
+ * detail is the model's actual reasoning text (when present).
  */
 export interface ReasoningStep {
   timestamp: number;
   summary: string;
   toolName?: string;
+  /** Optional: the model's reasoning/thinking text for this step */
+  detail?: string;
 }
 
 /**
@@ -50,12 +53,12 @@ export function createInitialReasoningState(): AgentReasoningState {
  */
 export interface SerializedReasoningData {
   elapsed: number;
-  steps: string[];
+  steps: Array<{ summary: string; detail?: string }>;
 }
 
 /**
  * Serialize reasoning state to a marker format for embedding in messages.
- * Format: <!--AGENT_REASONING:status:elapsedSeconds:["step1","step2"]-->
+ * Format: <!--AGENT_REASONING:status:elapsedSeconds:JSON--> where JSON is array of {s, d?} (summary, optional detail).
  *
  * @param state - The reasoning state to serialize
  * @returns Marker string to embed in message
@@ -65,8 +68,19 @@ export function serializeReasoningBlock(state: AgentReasoningState): string {
     return "";
   }
 
-  const stepsJson = JSON.stringify(state.steps.map((s) => s.summary));
+  const stepsPayload = state.steps.map((s) =>
+    s.detail != null && s.detail.trim() !== "" ? { s: s.summary, d: s.detail } : { s: s.summary }
+  );
+  const stepsJson = JSON.stringify(stepsPayload);
   return `<!--AGENT_REASONING:${state.status}:${state.elapsedSeconds}:${stepsJson}-->`;
+}
+
+/**
+ * One step in parsed reasoning (summary and optional detail text)
+ */
+export interface ParsedReasoningStep {
+  summary: string;
+  detail?: string;
 }
 
 /**
@@ -76,12 +90,13 @@ export interface ParsedReasoningBlock {
   hasReasoning: boolean;
   status: ReasoningStatus;
   elapsedSeconds: number;
-  steps: string[];
+  steps: ParsedReasoningStep[];
   contentAfter: string;
 }
 
 /**
  * Parse reasoning block marker from message content.
+ * Supports legacy format (array of strings) and new format (array of {s, d?}).
  *
  * @param content - Message content that may contain reasoning marker
  * @returns Parsed reasoning data or null if no marker found
@@ -94,9 +109,21 @@ export function parseReasoningBlock(content: string): ParsedReasoningBlock | nul
 
   const [fullMatch, status, elapsed, stepsJson] = match;
 
-  let steps: string[] = [];
+  let steps: ParsedReasoningStep[] = [];
   try {
-    steps = JSON.parse(stepsJson) as string[];
+    const parsed = JSON.parse(stepsJson) as unknown;
+    if (Array.isArray(parsed)) {
+      steps = parsed.map((item) => {
+        if (typeof item === "string") {
+          return { summary: item };
+        }
+        if (item != null && typeof item === "object" && "s" in item && typeof (item as { s: string }).s === "string") {
+          const o = item as { s: string; d?: string };
+          return { summary: o.s, detail: typeof o.d === "string" ? o.d : undefined };
+        }
+        return { summary: String(item) };
+      });
+    }
   } catch {
     // Invalid JSON, return empty steps
     steps = [];

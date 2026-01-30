@@ -33,6 +33,7 @@ import {
   AgentReasoningState,
   createInitialReasoningState,
   LocalSearchSourceInfo,
+  ReasoningStep,
   serializeReasoningBlock,
   summarizeToolCall,
   summarizeToolResult,
@@ -109,7 +110,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
   private reasoningState: AgentReasoningState = createInitialReasoningState();
   private reasoningTimerInterval: ReturnType<typeof setInterval> | null = null;
   private accumulatedContent = ""; // Track content to include in timer updates
-  private allReasoningSteps: Array<{ timestamp: number; summary: string; toolName?: string }> = []; // Full history of all steps
+  private allReasoningSteps: ReasoningStep[] = []; // Full history of all steps
   private abortHandledByTimer = false; // Flag to prevent duplicate interrupted messages
 
   private getAvailableTools(): StructuredTool[] {
@@ -219,11 +220,12 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
    * @param summary - Human-readable summary of the step
    * @param toolName - Optional name of the tool associated with this step
    */
-  private addReasoningStep(summary: string, toolName?: string): void {
-    const step = {
+  private addReasoningStep(summary: string, toolName?: string, detail?: string): void {
+    const step: ReasoningStep = {
       timestamp: Date.now(),
       summary,
       toolName,
+      ...(detail != null && detail.trim() !== "" ? { detail: detail.trim() } : {}),
     };
     // Always add to full history
     this.allReasoningSteps.push(step);
@@ -646,6 +648,11 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
 
       // Check for native tool calls
       const toolCalls = aiMessage.tool_calls || [];
+
+      // When there are tool calls, add the model's reasoning text as a step so it appears in the panel
+      if (toolCalls.length > 0 && typeof content === "string" && content.trim() !== "") {
+        this.addReasoningStep("Reasoning", undefined, content);
+      }
 
       // No tool calls = final response
       if (toolCalls.length === 0) {
