@@ -119,8 +119,14 @@ const createGetFileTreeTool = (root: TFolder) =>
   createLangChainTool({
     name: "getFileTree",
     description:
-      "Get the file tree as a nested structure of folders and files. By default empty folders are omitted; set fullListing to true to include them.",
+      "Get the file tree as a nested structure of folders and files. By default the entire vault is listed from root; use startFolder to list only a subfolder. Empty folders are omitted unless fullListing is true.",
     schema: z.object({
+      startFolder: z
+        .string()
+        .optional()
+        .describe(
+          "Vault-relative path to the folder to list from (e.g. 'Projects/2024'). If omitted, the entire vault is listed from root."
+        ),
       fullListing: z
         .boolean()
         .optional()
@@ -128,13 +134,28 @@ const createGetFileTreeTool = (root: TFolder) =>
           "When true, include empty folders in the result; when false or omitted, empty folders are filtered out"
         ),
     }),
-    func: async (args: { fullListing?: boolean }) => {
+    func: async (args: { startFolder?: string; fullListing?: boolean }) => {
       const includeEmptyFolders = args?.fullListing === true;
-      // First try building the tree with files included
-      const tree = buildFileTree(root, true, includeEmptyFolders);
+      let folder: TFolder = root;
 
+      if (args?.startFolder != null && args.startFolder.trim() !== "") {
+        const path = args.startFolder.trim();
+        const abstractFile = root.vault.getAbstractFileByPath(path);
+        if (abstractFile == null) {
+          return `Error: Folder not found: "${path}". Use a vault-relative path (e.g. "Projects/2024").`;
+        }
+        if (!isTFolder(abstractFile)) {
+          return `Error: Path is not a folder: "${path}".`;
+        }
+        folder = abstractFile;
+      }
+
+      // First try building the tree with files included
+      const tree = buildFileTree(folder, true, includeEmptyFolders);
+
+      const rootKey = folder === root ? "vault" : folder.name;
       const prompt = `A JSON represents the file tree as a nested structure:
-* The root object has a key "vault" which contains a FileTreeNode object.
+* The root object has a key "${rootKey}" which contains a FileTreeNode object.
 * Each FileTreeNode has these properties:
   * files: An array of filenames in the current directory (if any files exist)
   * subFolders: An object mapping folder names to their FileTreeNode objects (if any subfolders exist)
@@ -146,7 +167,7 @@ const createGetFileTreeTool = (root: TFolder) =>
       // If the file tree is larger than 0.5MB, use the simplified version instead.
       if (jsonResult.length > 500000) {
         // Rebuild tree without file lists
-        const simplifiedTree = buildFileTree(root, false, includeEmptyFolders);
+        const simplifiedTree = buildFileTree(folder, false, includeEmptyFolders);
         return prompt + JSON.stringify(simplifiedTree);
       }
 

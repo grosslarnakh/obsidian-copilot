@@ -87,6 +87,16 @@ describe("FileTreeTools", () => {
       new MockTFile("text", root),
     ];
 
+    // Mock vault.getAbstractFileByPath for startFolder tests
+    root.vault = {
+      getAbstractFileByPath: (path: string) => {
+        if (path === "docs") return docs;
+        if (path === "docs/projects") return projects;
+        if (path === "docs/notes") return notes;
+        return null;
+      },
+    };
+
     // Reset mocks before each test
     jest.clearAllMocks();
 
@@ -242,5 +252,41 @@ describe("FileTreeTools", () => {
     const jsonPartDefault = resultDefault.substring(resultDefault.indexOf("{"));
     const treeDefault = JSON.parse(jsonPartDefault);
     expect(treeDefault.vault.subFolders.docs.subFolders.empty).toBeUndefined();
+  });
+
+  it("should list only startFolder when startFolder is provided", async () => {
+    const tool = createGetFileTreeTool(root);
+    const result = await ToolManager.callTool(tool, { startFolder: "docs" });
+    const jsonPart = result.substring(result.indexOf("{"));
+    const tree = JSON.parse(jsonPart);
+
+    expect(tree.vault).toBeUndefined();
+    expect(tree.docs).toBeDefined();
+    expect(tree.docs.files).toEqual(["readme.md"]);
+    expect(tree.docs.subFolders).toHaveProperty("projects");
+    expect(tree.docs.subFolders).toHaveProperty("notes");
+    expect(tree.docs.subFolders.projects.files).toEqual([
+      "project1.md",
+      "project2.md",
+      "data.json",
+    ]);
+  });
+
+  it("should return error when startFolder path does not exist", async () => {
+    const tool = createGetFileTreeTool(root);
+    const result = await ToolManager.callTool(tool, { startFolder: "nonexistent" });
+    expect(result).toContain("Folder not found");
+    expect(result).toContain("nonexistent");
+  });
+
+  it("should list from subfolder when startFolder is docs/projects", async () => {
+    const tool = createGetFileTreeTool(root);
+    const result = await ToolManager.callTool(tool, { startFolder: "docs/projects" });
+    const jsonPart = result.substring(result.indexOf("{"));
+    const tree = JSON.parse(jsonPart);
+
+    expect(tree.projects).toBeDefined();
+    expect(tree.projects.files).toEqual(["project1.md", "project2.md", "data.json"]);
+    expect(tree.projects.subFolders).toBeUndefined();
   });
 });

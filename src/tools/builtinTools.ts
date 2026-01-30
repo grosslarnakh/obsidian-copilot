@@ -245,14 +245,15 @@ export function registerFileTreeTool(vault: Vault): void {
       isBackground: true,
       customPromptInstructions: `For getFileTree:
 - Use to browse the vault's file structure including paths of notes and folders
-- Always call this tool to explore the exact path of notes or folders when you are not given the exact path.
-- DO NOT use this tool to look up note contents or metadata - use localSearch or readNote instead.
-- Optional parameter fullListing: set to true to include empty folders in the result; by default empty folders are omitted
+- By default the entire vault is listed from root. Optional startFolder: vault-relative path (e.g. "Projects/2024") to list only that folder and its subfolders
+- Optional fullListing: set to true to include empty folders in the result; by default empty folders are omitted
+- Always call this tool to explore the exact path of notes or folders when you are not given the exact path
+- DO NOT use this tool to look up note contents or metadata - use localSearch or readNote instead
 
 Example queries that should use getFileTree:
 - "Create a new note in the projects folder" → call getFileTree to get the exact folder path
-- "Create a new note using the quick note template" → call getFileTree to look up the template path
-- "How many files are in the projects folder" → call getFileTree to list all files`,
+- "How many files are in the projects folder" → call getFileTree with startFolder: "projects" (or the exact path)
+- "List files in my Templates folder" → getFileTree with startFolder: "Templates"`,
     },
   });
 }
