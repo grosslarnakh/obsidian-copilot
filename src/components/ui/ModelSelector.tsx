@@ -71,7 +71,11 @@ export function ModelSelector({
             {modelError ? (
               <span className="tw-truncate tw-text-error">Model Load Failed</span>
             ) : currentModel ? (
-              <ModelDisplay model={currentModel} iconSize={8} />
+              <ModelDisplay
+                model={currentModel}
+                iconSize={8}
+                iconContainerClassName="tw-mt-0.5"
+              />
             ) : (
               <span className="tw-truncate">Select Model</span>
             )}
@@ -110,7 +114,7 @@ export function ModelSelector({
                 }}
                 className={!hasApiKey ? "tw-opacity-70" : ""}
               >
-                <ModelDisplay model={model} iconSize={12} />
+                <ModelDisplay model={model} iconSize={12} variant="normal" />
               </DropdownMenuItem>
             );
           })}

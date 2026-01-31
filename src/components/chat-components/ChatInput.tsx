@@ -854,7 +854,10 @@ const ChatInput: React.FC<ChatInputProps> = ({
                         new AddImageModal(app, onAddImage).open();
                       }}
                     >
-                      <Image className="tw-size-4" />
+                      <Image
+                        className="tw-size-4"
+                        style={{ color: "var(--text-muted)" }}
+                      />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="tw-px-1 tw-py-0.5">Add image(s)</TooltipContent>

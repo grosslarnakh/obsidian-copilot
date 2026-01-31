@@ -91,12 +91,13 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
   // Check if any tool is selected (when autonomous agent is off)
   const hasSelectedTools = !autonomousAgentToggle && (vaultToggle || webToggle || composerToggle);
   
-  // Determine which icon to show
+  // Determine which icon to show on the mode dropdown trigger (inline color so it applies after build)
   const getIcon = () => {
+    const iconStyle = { color: "var(--text-muted)" };
     if (autonomousAgentToggle) {
-      return <Sparkles className="tw-size-4" />;
+      return <Sparkles className="tw-size-4" style={iconStyle} />;
     }
-    return <Wrench className="tw-size-4" />;
+    return <Wrench className="tw-size-4" style={iconStyle} />;
   };
 
   return (
